@@ -1,0 +1,314 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<title>BondiCheck</title> 
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.css" />
+	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.js"></script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?&sensor=true"></script>
+
+	<script type="text/javascript"> 
+
+		var mapa = null;
+		var gps;
+		var pos ;
+		
+
+
+
+
+		function agregarMarcadores(e){
+						console.log(e.latitud);
+						console.log(e.longitud);
+						var posicion = new google.maps.LatLng(e.latitud,e.longitud);
+			        	var gota = new google.maps.Marker({
+	          				position: posicion,
+	          				title: e.linea,
+	          				animation: google.maps.Animation.DROP,
+	          				map : mapa
+            			});
+
+        	          
+
+        				var infow = new google.maps.InfoWindow(function(pt){
+							return function() {
+								console.log(pt.hora);
+								return {content : "Linea : " + pt.linea + " - A las : " + pt.hora};	
+							}();
+							
+        				}(e));
+			            
+        	            //caca[i] = gota; 
+        	            //console.log(caca);
+			            
+			            /*google.maps.event.addListener(caca[i], 'click', function() {
+							infow.open(mapa,caca[i]);
+						});*/
+						
+						console.log(gota);
+			            google.maps.event.addListener(gota, 'click', (function(g) {
+							return function(){
+								console.log(g);
+								infow.open(mapa,g);
+							}
+						}(gota)) );
+		}
+
+	     // FUNCION ENCARGADA DE CARGAR LOS PUNTOS DENTRO DEL MAPA
+		function verMapa() {
+        	$.mobile.changePage($("#mapa"));
+
+			// Aplicamos el mapa        	
+    		var opciones = {
+			  zoom: 15,
+			  mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+			mapa = new google.maps.Map(document.getElementById('mapa_content'), opciones);
+
+				     	//cargamos la posicion
+
+ 			console.log ("-> Recuperamos de la bd los puntos");
+				$.post("http://groupweird.com/bus/json-data.php",
+				  {
+				  	linea : $("#select-ver-linea").val()
+				  },
+				  function (datos){
+				  	console.log(datos);
+				  	var j = 0;
+				  	for (var i=0; i<datos[0].length;i++)
+					{
+						//var caca = [];
+						var marcador = datos[0][i];
+						agregarMarcadores(marcador);
+						
+
+					}
+				  },
+				  "json"
+			  );
+
+
+            /*
+            var tipo = new google.maps.Marker({
+              position: pos,
+              title: 'Usted',
+              animation: google.maps.Animation.DROP,
+              map : mapa
+            });
+            
+            var infowindow = new google.maps.InfoWindow({
+            		content : "Usted esta aqui",
+        	});
+            
+            google.maps.event.addListener(tipo, 'click', function() {
+				infowindow.open(mapa,tipo);
+			});
+			*/
+    		
+        	
+        	
+    		console.log("cambio de pagina");
+    		setTimeout(function(){
+    			google.maps.event.trigger(mapa,'resize');
+    			mapa.setCenter(pos);
+
+    		},1000);
+    			
+
+		}
+
+		function inicializar() {
+			
+			if (navigator.geolocation)
+			{
+			    //Hago el CallBack a mostrarLocalizacion
+				navigator.geolocation.getCurrentPosition(mostrarLocalizacion,manejadorDeError);
+			}
+			else{
+			    //Caso contraio muestro error
+				alert("Su navegador no soporta Geolocalizacion");
+				}
+		}
+
+	    function mostrarLocalizacion(posicion)
+	     {
+	     	/* Metemos la localizacion del usuario cuando cargamos el mapa
+				despues vamos a ir metiendo los markers que representan la
+				linea que el consulta.
+	     	*/
+	     	pos = new google.maps.LatLng(posicion.coords.latitude,posicion.coords.longitude);
+
+	      }
+
+	    function manejadorDeError(error) {
+
+		   switch(error.code)
+            {
+                case error.PERMISSION_DENIED: alert("El usuario no permite compartir datos de geolocalizacion");
+                break;
+
+                case error.POSITION_UNAVAILABLE: alert("Imposible detectar la posicio actual");
+                break;
+
+                case error.TIMEOUT: alert("La posicion debe recuperar el tiempo de espera");
+                break;
+
+                default: alert("Error desconocido");
+                break;
+            }
+			var opciones = {
+			  map: mapa,
+			  position: new google.maps.LatLng(60, 105),
+			  content: content
+			};
+			var infowindow = new google.maps.InfoWindow(opciones);
+			mapa.setCenter(opciones.position);
+      }
+      google.maps.event.addDomListener(window, 'load', inicializar);
+
+
+   	$(document).ready(function(){
+
+	  	//Esto se encarga de procesar el formulario de check in
+	  	$("#form-check-in").submit(function (){
+	     	//cargamos la posicion
+ 			$("#text-pos").val(pos);
+ 			console.log ("-> Hasta aca estamos");
+			$.post("http://groupweird.com/bus/persistir.php",
+			  {
+			  	latitud : pos.Xa,
+			  	longitud : pos.Ya,
+			  	linea : $("#select-choice-0").val()
+			  },
+			  function (datos){
+			  	console.log(datos);
+			  	if (!datos.estado){
+			  		alert ("Ocurrio un error : " + datos.error);
+			  	}else{
+			  		console.log("exito");
+			  		alert("Se guardo su check-in con exito!");
+			  	}
+			  },
+			  "json"
+			  );
+		});
+
+
+
+		
+
+	});
+
+    </script>
+
+	<style type="text/css">
+
+		#mapa_content {
+			height: 250px;
+			width: 100%;
+		}
+
+	</style>
+</head> 
+<body> 
+
+<div data-role="page" id="inicio">
+
+	<div data-role="header">
+		<h1>BondiCheck</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+		<p> <img src="http://www.ulsasaltillo.edu.mx/Becas/Travel_Bus.png"> </p>	
+		<p>Utiliza BondiCheck para ver donde se encuentran los colectivos.</p>
+		<p>Ayuda a la comunidad haciendo check-in del colectivo donde estas.</p>
+		<p><br/></p>
+		<p><a href="#check-in" data-role="button" data-transition="slide"> Check-In </a></p>	
+		<p><a href="#ver" data-role="button" data-transition="slide" id="test"> Buscar Bondi </a></p>		
+	</div><!-- /content -->
+
+</div><!-- /page -->
+
+<div data-role="page" id="check-in">
+
+	<div data-role="header">
+		<h1>BondiCheck</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+		<h2>Check-in</h2>	
+		<p>Selecciona la linea en la que estas.</p>
+		<form  method = "post" action ="" id="form-check-in">
+			<label for="select-choice-0" class="select">Linea :</label>
+			<select name="select-choice-0" id="select-choice-0">
+			   <option value="1">Linea 1</option>
+			   <option value="2">Linea 2</option>
+			   <option value="3">Linea 3</option>
+			   <option value="4">Linea 4</option>
+			   <option value="5">Linea 5</option>
+			   <option value="6">Linea 6</option>
+			   <option value="7">Linea 7</option>
+			   <option value="8">Linea 8</option>
+			   <option value="9">Linea 9</option>
+			   <option value="10">Linea 10</option>
+			   <option value="11">Linea 11</option>
+			</select>
+			<input type="text" id="text-pos" value="0">
+			<br>
+			<input type="submit" value="Check-in" id="boton-check-in"> 
+		</form>
+		<p><a href="#inicio" data-role="button" data-transition="slide"> atras </a></p>			
+	</div><!-- /content -->
+
+</div><!-- /page -->
+
+<div data-role="page" id="ver">
+
+	<div data-role="header">
+		<h1>BondiCheck</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">	
+		<p>Busca un bondi</p>
+		<br/>
+		<select name="select-ver-linea" id="select-ver-linea">
+			   <option value="1">Linea 1</option>
+			   <option value="2">Linea 2</option>
+			   <option value="3">Linea 3</option>
+			   <option value="4">Linea 4</option>
+			   <option value="5">Linea 5</option>
+			   <option value="6">Linea 6</option>
+			   <option value="7">Linea 7</option>
+			   <option value="8">Linea 8</option>
+			   <option value="9">Linea 9</option>
+			   <option value="10">Linea 10</option>
+			   <option value="11">Linea 11</option>
+		</select>
+		<p><a href="#mapa" data-role="button"  id="vermapa" rel="external" onclick="verMapa(); return false"> Ver Mapa </a></p>	
+		<p><a href="#inicio" data-role="button" data-transition="slide"> atras </a></p>	
+			
+	</div><!-- /content -->
+
+</div><!-- /page -->
+
+
+<div data-role="page" id="mapa">
+
+	<div data-role="header">
+		<h1>BondiCheck</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">	
+		<div id="mapa_content"></div>
+		<br>	
+		<p><a href="#ver" data-role="button" data-transition="slide"> atras </a></p>	
+			
+	</div><!-- /content -->
+
+</div><!-- /page -->
+
+	
+
+</body>
+</html>
