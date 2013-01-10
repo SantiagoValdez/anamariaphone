@@ -170,6 +170,9 @@
 
    	$(document).ready(function(){
 
+   		$("#test").click(function (){
+   			alert("hi");
+   		});
 	  	//Esto se encarga de procesar el formulario de check in
 	  	$("#form-check-in").submit(function (){
 	     	//cargamos la posicion
@@ -220,15 +223,17 @@
 	</div><!-- /header -->
 
 	<div data-role="content">
+		<center>
 		<p> <img src="img/logo.png"> </p>	
 		<h1>ANA MARIA</h1>
 		<p>Sistema de control de Cobros</p>
 		<p><br/></p>	
-		<p><a href="#ingresar" data-role="button" data-transition="slide" id="test"> ingresar </a></p>		
+		<p><a href="#ingresar" data-role="button" data-transition="slide" id="test"> Ingresar </a></p>		
+		</center>
 	</div><!-- /content -->
 
 	<div data-role="footer" data-theme="d">
-		groupweird
+		<p><br/></p>
 	</div><!-- /footer -->
 
 </div><!-- /page -->
@@ -240,6 +245,7 @@
 	</div><!-- /header -->
 
 	<div data-role="content">
+		<center>	
 		<h2>Ingresa</h2>	
 		
 			<label for="select-choice-0" class="select">Selecciona tu nombre en la lista de Vendedores :</label>
@@ -250,61 +256,82 @@
 			   <option value="4">Elver Galargas</option>
 			</select>
 			<br>
-		<p><a href="#inicio" data-role="button" data-transition="slideup" data-icon="check" > ok </a></p> 
-		<p><a href="#inicio" data-role="button" data-transition="slideup" data-icon="arrow-r" > atras </a></p>			
+		<p><a href="#seleccionar-cliente" data-role="button" data-transition="slideup" data-icon="check" > OK </a></p> 
+		<p><a href="#inicio" data-role="button" data-transition="slideup" data-icon="arrow-l" > atras </a></p>			
+		</center>
 	</div><!-- /content -->
 
 	<div data-role="footer" data-theme="d">
-		groupweird
+		<p><br/></p>
 	</div><!-- /footer -->
 
 </div><!-- /page -->
 
-<div data-role="page" id="ver">
 
-	<div data-role="header">
-		<h1>BondiCheck</h1>
+<div data-role="page" id="seleccionar-cliente" data-theme="d">
+
+	<div data-role="header" data-theme="d">
+		<h1>Ana Maria</h1>
 	</div><!-- /header -->
 
-	<div data-role="content">	
-		<p>Busca un bondi</p>
-		<br/>
-		<select name="select-ver-linea" id="select-ver-linea">
-			   <option value="1">Linea 1</option>
-			   <option value="2">Linea 2</option>
-			   <option value="3">Linea 3</option>
-			   <option value="4">Linea 4</option>
-			   <option value="5">Linea 5</option>
-			   <option value="6">Linea 6</option>
-			   <option value="7">Linea 7</option>
-			   <option value="8">Linea 8</option>
-			   <option value="9">Linea 9</option>
-			   <option value="10">Linea 10</option>
-			   <option value="11">Linea 11</option>
-		</select>
-		<p><a href="#mapa" data-role="button"  id="vermapa" rel="external" onclick="verMapa(); return false"> Ver Mapa </a></p>	
-		<p><a href="#inicio" data-role="button" data-transition="slide"> atras </a></p>	
-			
+	<div data-role="content">
+		<center>	
+		<h2>Cobro</h2>	
+		
+			<label for="select-choice-0" class="select">Selecciona el cliente :</label>
+			<select name="select-choice-0" id="select-choice-0">
+			   <option value="1">Juancho Talarga</option>
+			   <option value="2">Alan Brito</option>
+			   <option value="3">Benito Camela</option>
+			   <option value="4">Elver Galargas</option>
+			</select>
+			<br>
+		<p><a href="#cobro" data-role="button" data-transition="slideup" data-icon="arrow-r" > Siguiente </a></p> 
+		<p><a href="#inicio" data-role="button" data-transition="slideup" data-icon="arrow-l" > atras </a></p>			
+		</center>
 	</div><!-- /content -->
+
+	<div data-role="footer" data-theme="d">
+		<p><br/></p>
+	</div><!-- /footer -->
 
 </div><!-- /page -->
 
 
-<div data-role="page" id="mapa">
+<div data-role="page" id="cobro" data-theme="d">
 
-	<div data-role="header">
-		<h1>BondiCheck</h1>
+	<div data-role="header" data-theme="d">
+		<h1>Ana Maria</h1>
 	</div><!-- /header -->
 
-	<div data-role="content">	
-		<div id="mapa_content"></div>
-		<br>	
-		<p><a href="#ver" data-role="button" data-transition="slide"> atras </a></p>	
-			
+	<div data-role="content">
+		<center>	
+		<h2>Cobro</h2>	
+		Lista de Cobros Pendientes :
+		  
+		  <fieldset data-role="controlgroup" data-type="vertical">
+	  	        <input id="cobro-1"name="category" type="checkbox">
+    			<label for="cobro-1"> 23/10/2012 </label>
+
+	  	        <input id="cobro-2" name="category" type="checkbox">
+    			<label for="cobro-2"> 23/11/2012 </label>
+
+    			<input id="cobro-3"name="category" type="checkbox">
+    			<label for="cobro-3"> 23/12/2012 </label>
+
+	  	        <input id="cobro-4"name="category" type="checkbox">
+    			<label for="cobro-4"> 23/01/2013 </label>
+		  </fieldset>
+		<p><a href="#inicio" data-role="button" data-transition="slideup" data-icon="arrow-r" > Siguiente </a></p> 
+		<p><a href="#ingresar" data-role="button" data-transition="slideup" data-icon="arrow-l" > atras </a></p>			
+		</center>
 	</div><!-- /content -->
 
-</div><!-- /page -->
+	<div data-role="footer" data-theme="d">
+		<p><br/></p>
+	</div><!-- /footer -->
 
+</div><!-- /page -->
 	
 
 </body>

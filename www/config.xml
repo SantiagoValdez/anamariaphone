@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widget xmlns     = "http://www.w3.org/ns/widgets"
+        xmlns:gap = "http://phonegap.com/ns/1.0"
+        id        = "com.groupweird.anamaria"
+        version   = "1.0.0">
+    <name>Ana Maria</name>
+
+    <description>
+        Aplicacion de Cobro para Vendedores
+    </description>
+
+    <author href="http://groupweird.com" email="santiagovaldez@groupweird.com">
+        GroupWeird
+    </author>
+
+    <feature name="http://api.phonegap.com/1.0/device" />
+
+    <preference name="phonegap-version" value="2.1.0" />
+    <preference name="orientation"      value="default" />
+    <preference name="target-device"    value="universal" />
+    <preference name="fullscreen"       value="false" />
+
+    <icon src="icon.png" />
+</widget>
