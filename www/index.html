@@ -213,53 +213,50 @@
 </head> 
 <body> 
 
-<div data-role="page" id="inicio">
+<div data-role="page" id="inicio" data-theme="d">
 
-	<div data-role="header">
-		<h1>BondiCheck</h1>
+	<div data-role="header" data-theme="d">
+		<h1>Ana Maria</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
-		<p> <img src="http://www.ulsasaltillo.edu.mx/Becas/Travel_Bus.png"> </p>	
-		<p>Utiliza BondiCheck para ver donde se encuentran los colectivos.</p>
-		<p>Ayuda a la comunidad haciendo check-in del colectivo donde estas.</p>
-		<p><br/></p>
-		<p><a href="#check-in" data-role="button" data-transition="slide"> Check-In </a></p>	
-		<p><a href="#ver" data-role="button" data-transition="slide" id="test"> Buscar Bondi </a></p>		
+		<p> <img src="img/logo.png"> </p>	
+		<h1>ANA MARIA</h1>
+		<p>Sistema de control de Cobros</p>
+		<p><br/></p>	
+		<p><a href="#ingresar" data-role="button" data-transition="slide" id="test"> ingresar </a></p>		
 	</div><!-- /content -->
+
+	<div data-role="footer" data-theme="d">
+		groupweird
+	</div><!-- /footer -->
 
 </div><!-- /page -->
 
-<div data-role="page" id="check-in">
+<div data-role="page" id="ingresar" data-theme="d">
 
-	<div data-role="header">
-		<h1>BondiCheck</h1>
+	<div data-role="header" data-theme="d">
+		<h1>Ana Maria</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
-		<h2>Check-in</h2>	
-		<p>Selecciona la linea en la que estas.</p>
-		<form  method = "post" action ="" id="form-check-in">
-			<label for="select-choice-0" class="select">Linea :</label>
+		<h2>Ingresa</h2>	
+		
+			<label for="select-choice-0" class="select">Selecciona tu nombre en la lista de Vendedores :</label>
 			<select name="select-choice-0" id="select-choice-0">
-			   <option value="1">Linea 1</option>
-			   <option value="2">Linea 2</option>
-			   <option value="3">Linea 3</option>
-			   <option value="4">Linea 4</option>
-			   <option value="5">Linea 5</option>
-			   <option value="6">Linea 6</option>
-			   <option value="7">Linea 7</option>
-			   <option value="8">Linea 8</option>
-			   <option value="9">Linea 9</option>
-			   <option value="10">Linea 10</option>
-			   <option value="11">Linea 11</option>
+			   <option value="1">Juancho Talarga</option>
+			   <option value="2">Alan Brito</option>
+			   <option value="3">Benito Camela</option>
+			   <option value="4">Elver Galargas</option>
 			</select>
-			<input type="text" id="text-pos" value="0">
 			<br>
-			<input type="submit" value="Check-in" id="boton-check-in"> 
-		</form>
-		<p><a href="#inicio" data-role="button" data-transition="slide"> atras </a></p>			
+		<p><a href="#inicio" data-role="button" data-transition="slideup" data-icon="check" > ok </a></p> 
+		<p><a href="#inicio" data-role="button" data-transition="slideup" data-icon="arrow-r" > atras </a></p>			
 	</div><!-- /content -->
+
+	<div data-role="footer" data-theme="d">
+		groupweird
+	</div><!-- /footer -->
 
 </div><!-- /page -->
 
