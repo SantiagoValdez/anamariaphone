@@ -31,6 +31,7 @@ $app = new \Slim\Slim();
 $app->get('/vendedores', 'getVendedores');
 $app->get('/clientes', 'getClientes');
 $app->get('/cliente/cobros/:id','getCobrosClientes');
+$app->post('/cliente/cobro', 'updateCobroCliente');
 //$app->post('/cobro/:id','updateCobro');
 //$app->put('/oferta/:id','updateOferta');
 //$app->delete('/oferta/:id',   'deleteOferta');
@@ -51,9 +52,12 @@ $app->run();
 
 function getConnection() {
     $dbhost="127.0.0.1";
-    $dbuser="root";
+    $dbuser="root"; 
+    //$dbuser="groupwe"; 
     $dbpass="pepe";
+    //$dbpass="kaiser09";
     $dbname="anamaria";
+    //$dbname="groupwe_anamaria";
     $dbh = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     return $dbh;
@@ -92,7 +96,7 @@ function getVendedores() {
  */
   
 function getClientes() {
-    $sql = "SELECT id,nombre,apellido FROM cliente WHERE saldo > 0";
+    $sql = "SELECT id,nombre,apellido,saldo FROM cliente WHERE saldo > 0";
     try {
         $db = getConnection();
         $stmt = $db->query($sql);
@@ -114,7 +118,7 @@ function getClientes() {
 */
 
 function getCobrosClientes($id){
-    $sql = "SELECT monto, fecha FROM  cobro WHERE cliente=:id AND pendiente=1 ORDER BY fecha";
+    $sql = "SELECT id, monto, fecha FROM  cobro WHERE cliente=:id AND pendiente=1 ORDER BY fecha";
     try {
         $db = getConnection();
         $stmt = $db->prepare($sql);
@@ -127,7 +131,23 @@ function getCobrosClientes($id){
         echo '{"error":{"text":'. $e->getMessage() .'}}';
     }
 }
+
+/**
+* Se encarga de persistir un cobro
+*
+* Persiste el cobro que se realizo al cliente, actualizando tabla cobro 
+* y saldo cliente 
+* 
+*/
+
  
+function updateCobroCliente(){
+    $request = \Slim\Slim::getInstance()->request();
+    $Oferta = json_decode($request->getBody());
+    echo $Oferta->idCliente;
+} 
+
+
 function addOferta() {
     $request = \Slim\Slim::getInstance()->request();
     $Oferta = json_decode($request->getBody());

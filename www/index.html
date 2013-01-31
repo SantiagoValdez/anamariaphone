@@ -1,7 +1,7 @@
 <!DOCTYPE html> 
 <html> 
 <head> 
-	<title>BondiCheck</title> 
+	<title>AMC Comercial</title> 
 	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0-alpha.1/jquery.mobile-1.2.0-alpha.1.min.css" />
 	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
@@ -9,226 +9,216 @@
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?&sensor=true"></script>
 
 	<script type="text/javascript"> 
-
-		var mapa = null;
-		var gps;
-		var pos ;
+		var Cliente;
+		var ListadoClientes;
 		
+		var ListadoVendedores;
+		var Vendedor;
+		
+		var CobrosRealizados;
+		var ListaCobros;
 
+		var Monto = 0;		
 
-
-
-		function agregarMarcadores(e){
-						console.log(e.latitud);
-						console.log(e.longitud);
-						var posicion = new google.maps.LatLng(e.latitud,e.longitud);
-			        	var gota = new google.maps.Marker({
-	          				position: posicion,
-	          				title: e.linea,
-	          				animation: google.maps.Animation.DROP,
-	          				map : mapa
-            			});
-
-        	          
-
-        				var infow = new google.maps.InfoWindow(function(pt){
-							return function() {
-								console.log(pt.hora);
-								return {content : "Linea : " + pt.linea + " - A las : " + pt.hora};	
-							}();
-							
-        				}(e));
-			            
-        	            //caca[i] = gota; 
-        	            //console.log(caca);
-			            
-			            /*google.maps.event.addListener(caca[i], 'click', function() {
-							infow.open(mapa,caca[i]);
-						});*/
-						
-						console.log(gota);
-			            google.maps.event.addListener(gota, 'click', (function(g) {
-							return function(){
-								console.log(g);
-								infow.open(mapa,g);
-							}
-						}(gota)) );
-		}
-
-	     // FUNCION ENCARGADA DE CARGAR LOS PUNTOS DENTRO DEL MAPA
-		function verMapa() {
-        	$.mobile.changePage($("#mapa"));
-
-			// Aplicamos el mapa        	
-    		var opciones = {
-			  zoom: 15,
-			  mapTypeId: google.maps.MapTypeId.ROADMAP
-			};
-			mapa = new google.maps.Map(document.getElementById('mapa_content'), opciones);
-
-				     	//cargamos la posicion
-
- 			console.log ("-> Recuperamos de la bd los puntos");
-				$.post("http://groupweird.com/bus/json-data.php",
-				  {
-				  	linea : $("#select-ver-linea").val()
-				  },
-				  function (datos){
-				  	console.log(datos);
-				  	var j = 0;
-				  	for (var i=0; i<datos[0].length;i++)
-					{
-						//var caca = [];
-						var marcador = datos[0][i];
-						agregarMarcadores(marcador);
-						
-
-					}
-				  },
-				  "json"
-			  );
-
-
-            /*
-            var tipo = new google.maps.Marker({
-              position: pos,
-              title: 'Usted',
-              animation: google.maps.Animation.DROP,
-              map : mapa
-            });
-            
-            var infowindow = new google.maps.InfoWindow({
-            		content : "Usted esta aqui",
-        	});
-            
-            google.maps.event.addListener(tipo, 'click', function() {
-				infowindow.open(mapa,tipo);
-			});
-			*/
-    		
-        	
-        	
-    		console.log("cambio de pagina");
-    		setTimeout(function(){
-    			google.maps.event.trigger(mapa,'resize');
-    			mapa.setCenter(pos);
-
-    		},1000);
-    			
-
-		}
-
-		function inicializar() {
-			
-			if (navigator.geolocation)
-			{
-			    //Hago el CallBack a mostrarLocalizacion
-				navigator.geolocation.getCurrentPosition(mostrarLocalizacion,manejadorDeError);
-			}
-			else{
-			    //Caso contraio muestro error
-				alert("Su navegador no soporta Geolocalizacion");
+		/*
+			Dada una lista, retorna el objeto que posea ese id
+		*/
+		function recuperarPorId( lista , id ){
+			for (x in lista){
+				if ( lista[x].id == id ){
+					return lista[x];
 				}
+			}
+			return null;
 		}
 
-	    function mostrarLocalizacion(posicion)
-	     {
-	     	/* Metemos la localizacion del usuario cuando cargamos el mapa
-				despues vamos a ir metiendo los markers que representan la
-				linea que el consulta.
-	     	*/
-	     	pos = new google.maps.LatLng(posicion.coords.latitude,posicion.coords.longitude);
 
-	      }
+		/*
+			Carga la lista de Vendedores en el Select
+		*/
+		function cargarListaVendedores(){
 
-	    function manejadorDeError(error) {
+		  //Hacemos una peticion get al servidor, a la direccion que establecimos
+		  $.get('./server/vendedores', function(data) {
+		    console.log(data);
+		    //Tenemos la lista pero esta mas adentro
+		    var lista = jQuery.parseJSON( data );
+		    console.log (lista);
+		    //Sacamos un poco mas afuera
+		    var vendedores = lista.Vendedores;
+		    $("#select-vendedores").empty();
+		    for (vendedor in vendedores){
 
-		   switch(error.code)
-            {
-                case error.PERMISSION_DENIED: alert("El usuario no permite compartir datos de geolocalizacion");
-                break;
+		      //Agregamos al select
+		      $("#select-vendedores").append("<option value='"+ vendedores[vendedor].id +  "'>"+ vendedores[vendedor].nombre + " " + vendedores[vendedor].apellido +"</option>");
+		    }
+		    $("#select-vendedores").selectmenu('refresh', true);
+		    ListadoVendedores = vendedores;
+		    console.log("prueba refresh 2");
+		    
+		  });
+		}
 
-                case error.POSITION_UNAVAILABLE: alert("Imposible detectar la posicio actual");
-                break;
+		/*
+			Carga la lista de clientes en el select
+		*/
 
-                case error.TIMEOUT: alert("La posicion debe recuperar el tiempo de espera");
-                break;
+		function cargarListaClientes(){
 
-                default: alert("Error desconocido");
-                break;
-            }
-			var opciones = {
-			  map: mapa,
-			  position: new google.maps.LatLng(60, 105),
-			  content: content
-			};
-			var infowindow = new google.maps.InfoWindow(opciones);
-			mapa.setCenter(opciones.position);
-      }
-      google.maps.event.addDomListener(window, 'load', inicializar);
+		  //Hacemos una peticion get al servidor, a la direccion que establecimos
+		  $.get('./server/clientes', function(data) {
+		    console.log(data);
+		    //Tenemos la lista pero esta mas adentro
+		    var lista = jQuery.parseJSON( data );
+		    console.log (lista);
+		    //Sacamos un poco mas afuera
+		    var clientes = lista.Clientes;
+		    $("#select-clientes").empty();
+		    for (cliente in clientes){
 
-
-   	$(document).ready(function(){
-
-   		$("#test").click(function (){
-   			alert("hi");
-   		});
-	  	//Esto se encarga de procesar el formulario de check in
-	  	$("#form-check-in").submit(function (){
-	     	//cargamos la posicion
- 			$("#text-pos").val(pos);
- 			console.log ("-> Hasta aca estamos");
-			$.post("http://groupweird.com/bus/persistir.php",
-			  {
-			  	latitud : pos.Xa,
-			  	longitud : pos.Ya,
-			  	linea : $("#select-choice-0").val()
-			  },
-			  function (datos){
-			  	console.log(datos);
-			  	if (!datos.estado){
-			  		alert ("Ocurrio un error : " + datos.error);
-			  	}else{
-			  		console.log("exito");
-			  		alert("Se guardo su check-in con exito!");
-			  	}
-			  },
-			  "json"
-			  );
-		});
-
-
-
+		      //Agregamos al select
+		      $("#select-clientes").append("<option value='"+ clientes[cliente].id +  "'>"+ clientes[cliente].nombre + " " + clientes[cliente].apellido +"</option>");
+		    }
+		    $("#select-clientes").selectmenu('refresh', true);
+		    ListadoClientes = clientes;
+		    console.log("prueba cliente");
+		    
+		  });
 		
+		}
 
-	});
+		/*
+			Recupera los cobros del cliente seleccionado y los carga en el formulario
+		*/
+		function cargarListaCobrosCliente(){
+			Cliente = recuperarPorId( ListadoClientes , $("#select-clientes").val() );
+			Vendedor = recuperarPorId( ListadoVendedores,  $("#select-vendedores").val())
+			if ( Cliente != null && Vendedor != null){
+					console.log(Cliente);
 
+					$("#titulo-cobro").empty().append(" Lista de Cobros Pendientes de <b>" +Cliente.nombre + 
+											  " " + Cliente.apellido + "</b>" + 
+											  " Saldo: " + Cliente.saldo );
+
+					var url = "./server/cliente/cobros/" + Cliente.id;
+
+					$.get(url, function(data) {
+					    console.log(data);
+					    //Tenemos la lista pero esta mas adentro
+					    var lista = jQuery.parseJSON( data );
+					    console.log (lista);
+					    //Sacamos un poco mas afuera
+					    var cobros = lista.Cobros;
+					    
+					    $("#lista-cobros").empty().append('<fieldset data-role="controlgroup" data-type="vertical" id="cobros">');
+
+					    for (cobro in cobros){
+					    	var cadena = " <input id='" + cobros[cobro].id + "' name='cobro-"+ cobros[cobro].id +"' type='checkbox' value='"+ cobros[cobro].id +"'>" + 
+					    				"<label for='"+ cobros[cobro].id +"'> "+ cobros[cobro].fecha +" </label> "
+					    	$("#lista-cobros").append( cadena )
+					    }
+					    $("#lista-cobros").append('</fieldset>');
+					    
+					    $("#lista-cobros").controlgroup("refresh");
+					    $("#cobro").trigger("create");
+					    
+					    ListaCobros = cobros;
+
+					    console.log("prueba cobros");
+					    $.mobile.changePage( $("#cobro") );
+				    
+				  	});
+			  	}else{
+			  		alert("Error, seleccione cliente y vendedor");
+			  		$.mobile.changePage( $("#inicio") );
+			  		//volve atras...que se yo
+			  	}
+
+		}
+
+		/*
+			Preparar el objeto que sera enviado el servidor,
+			recuperando los cobros seleccionados.
+		*/
+
+		function prepararCobro(){
+			var listaCobrosId = [];
+
+			Monto = $("#monto-cobro").val();
+			$('#lista-cobros input[type=checkbox]').each(function() {
+			    if ($(this).attr('checked')){
+				     listaCobrosId.push( $(this).val() );
+				     console.log( $(this).val() );
+			    }
+
+			  });
+
+			console.log(listaCobrosId);
+
+			//Si ya tengo la lista de cobros.
+			if ( listaCobrosId.length > 0 && Monto > 0 && Monto <= Cliente.saldo ){
+				console.log("Tengo cobros seleccionados");
+				
+				var cadena = "Confirma que realizara un cobro a <b>" + Cliente.nombre + " " + Cliente.apellido + 
+							 "</b> por la suma de : " + Monto + " por las cuotas de fecha : <ul>";
+				for (x in listaCobrosId){
+					var cobro = recuperarPorId(ListaCobros, listaCobrosId[x]);
+					cadena = cadena + "<li>" + cobro.fecha + "</li>";
+				}
+				cadena = cadena + "</ul>"
+
+				CobrosRealizados = listaCobrosId;
+				$("#confirmacion-cobro-placeholder").empty().append(cadena);
+				$.mobile.changePage( $("#confirmar-cobro") );
+			}else{
+				alert ("Seleccione alguna cuota. Verifique que el monto a cobrar es mayor a cero y menor o igual al saldo del cliente");
+				$.mobile.changePage( $("#cobro") );
+			}
+		}
+
+		/*
+			Envia los cobros al servidor. Informa si la operacion se realizo con exito
+			o si ocurrio algun error.
+		*/
+		function confirmarCobro(){
+			var datos = {
+					"idCliente" : Cliente.id,
+					"listaCobros" : CobrosRealizados,
+					"monto" : Monto
+					};
+
+			console.log(datos);
+
+		  	var url = "./server/cliente/cobro";
+		  	console.log(datos);
+ 
+		  	var posting = $.post( url , JSON.stringify(datos) );
+			 
+			  /* Put the results in a div */
+			  posting.done(function( data ) {
+			    //ya esta tarde asi que no comprobamos errores :O
+			    alert("Se agrego " + data);
+			  });
+		}
     </script>
 
-	<style type="text/css">
 
-		#mapa_content {
-			height: 250px;
-			width: 100%;
-		}
-
-	</style>
 </head> 
 <body> 
 
 <div data-role="page" id="inicio" data-theme="d">
 
 	<div data-role="header" data-theme="d">
-		<h1>Ana Maria</h1>
+		<h1>Ana Maria Comercial</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
 		<center>
 		<p> <img src="img/logo.png"> </p>	
-		<h1>ANA MARIA</h1>
+		<h1>Ana Maria Comercial</h1>
 		<p>Sistema de control de Cobros</p>
 		<p><br/></p>	
-		<p><a href="#ingresar" data-role="button" data-transition="slide" id="test"> Ingresar </a></p>		
+		<p><a href="#ingresar" data-role="button" data-transition="slide" id="test" onClick="cargarListaVendedores()"> Ingresar </a></p>		
 		</center>
 	</div><!-- /content -->
 
@@ -241,22 +231,19 @@
 <div data-role="page" id="ingresar" data-theme="d">
 
 	<div data-role="header" data-theme="d">
-		<h1>Ana Maria</h1>
+		<h1>Ana Maria Comercial</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
 		<center>	
 		<h2>Ingresa</h2>	
 		
-			<label for="select-choice-0" class="select">Selecciona tu nombre en la lista de Vendedores :</label>
-			<select name="select-choice-0" id="select-choice-0">
-			   <option value="1">Juancho Talarga</option>
-			   <option value="2">Alan Brito</option>
-			   <option value="3">Benito Camela</option>
-			   <option value="4">Elver Galargas</option>
+			<label for="select-vendedores" class="select">Selecciona tu nombre en la lista de Vendedores :</label>
+			<select name="select-vendedores" id="select-vendedores">
+			   <!-- Aca deberia ir la lista de vendedores -->
 			</select>
 			<br>
-		<p><a href="#seleccionar-cliente" data-role="button" data-transition="slideup" data-icon="check" > OK </a></p> 
+		<p><a href="#seleccionar-cliente" data-role="button" data-transition="slideup" data-icon="check" onClick="cargarListaClientes()"> OK </a></p> 
 		<p><a href="#inicio" data-role="button" data-transition="slideup" data-icon="arrow-l" > atras </a></p>			
 		</center>
 	</div><!-- /content -->
@@ -271,22 +258,19 @@
 <div data-role="page" id="seleccionar-cliente" data-theme="d">
 
 	<div data-role="header" data-theme="d">
-		<h1>Ana Maria</h1>
+		<h1>Ana Maria Comercial</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
 		<center>	
 		<h2>Cobro</h2>	
 		
-			<label for="select-choice-0" class="select">Selecciona el cliente :</label>
-			<select name="select-choice-0" id="select-choice-0">
-			   <option value="1">Juancho Talarga</option>
-			   <option value="2">Alan Brito</option>
-			   <option value="3">Benito Camela</option>
-			   <option value="4">Elver Galargas</option>
+			<label for="select-clientes" class="select">Selecciona el cliente :</label>
+			<select name="select-clientes" id="select-clientes">
+				<!-- Rellenado con los clientes -->
 			</select>
 			<br>
-		<p><a href="#cobro" data-role="button" data-transition="slideup" data-icon="arrow-r" > Siguiente </a></p> 
+		<p><a href="" data-role="button" data-transition="slideup" data-icon="arrow-r" onClick="cargarListaCobrosCliente()" > Siguiente </a></p> 
 		<p><a href="#inicio" data-role="button" data-transition="slideup" data-icon="arrow-l" > atras </a></p>			
 		</center>
 	</div><!-- /content -->
@@ -301,28 +285,23 @@
 <div data-role="page" id="cobro" data-theme="d">
 
 	<div data-role="header" data-theme="d">
-		<h1>Ana Maria</h1>
+		<h1>Ana Maria Comercial</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
 		<center>	
-		<h2>Cobro</h2>	
-		Lista de Cobros Pendientes :
+		<h2>Cobro</h2>
+		Lista de Cuotas Pendientes : 	
+		<div id="titulo-cobro"> </div>
+		  	<div id="lista-cobros">
 		  
-		  <fieldset data-role="controlgroup" data-type="vertical">
-	  	        <input id="cobro-1"name="category" type="checkbox">
+	  	       <!-- <input id="cobro-1" name="category" type="checkbox">
     			<label for="cobro-1"> 23/10/2012 </label>
+				-->
 
-	  	        <input id="cobro-2" name="category" type="checkbox">
-    			<label for="cobro-2"> 23/11/2012 </label>
-
-    			<input id="cobro-3"name="category" type="checkbox">
-    			<label for="cobro-3"> 23/12/2012 </label>
-
-	  	        <input id="cobro-4"name="category" type="checkbox">
-    			<label for="cobro-4"> 23/01/2013 </label>
-		  </fieldset>
-		<p><a href="#inicio" data-role="button" data-transition="slideup" data-icon="arrow-r" > Siguiente </a></p> 
+			</div>
+		  <input type="number" placeholder="Monto Cobro" name="monto-cobro" id="monto-cobro">
+		<p><a href="" data-role="button" data-transition="slideup" data-icon="arrow-r" onClick="prepararCobro()" > Siguiente </a></p> 
 		<p><a href="#ingresar" data-role="button" data-transition="slideup" data-icon="arrow-l" > atras </a></p>			
 		</center>
 	</div><!-- /content -->
@@ -333,6 +312,31 @@
 
 </div><!-- /page -->
 	
+
+
+<div data-role="page" id="confirmar-cobro" data-theme="d">
+
+	<div data-role="header" data-theme="d">
+		<h1>Ana Maria Comercial</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+		<center>	
+		<h2>Cobro</h2>	
+		Confirme el siguiente cobro :
+		<div id="confirmacion-cobro-placeholder">
+		</div>	
+		<p><a href="" data-role="button" data-transition="slideup" data-icon="check" onClick="confirmarCobro()"> Confimar </a></p> 
+		<p><a href="#cobro" data-role="button" data-transition="slideup" data-icon="arrow-l" > atras </a></p>			
+		</center>
+	</div><!-- /content -->
+
+	<div data-role="footer" data-theme="d">
+		<p><br/></p>
+	</div><!-- /footer -->
+
+</div><!-- /page -->
+
 
 </body>
 </html>
