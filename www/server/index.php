@@ -180,7 +180,7 @@ function updateCobroCliente(){
     $sql = "UPDATE cliente SET cliente.saldo = (cliente.saldo - ". $cobros->monto .") WHERE cliente.id = ".$cobros->idCliente. ";";
     
     for($i=0; $i < count($cobros->listaCobros); $i = $i+1 ){
-        $sql = $sql . "UPDATE cobro SET cobro.pendite = 0 WHERE cobro.id = ".$cobros->listaCobros[$i]." ;";
+        $sql = $sql . "UPDATE cobro SET cobro.pendiente = 0 WHERE cobro.id = ".$cobros->listaCobros[$i]." ;";
     }
 
     //echo $sql;
