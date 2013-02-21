@@ -187,7 +187,7 @@ function updateCobroCliente(){
     try {
         $db = getConnection();
         loguear("Se intenta ejecutar : [". $sql . "] - Inicio Transaccion"  );
-        $stmt = $db->query($sql);
+        $stmt = $db->exec($sql);
         $respuesta = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
         echo '{"status":{"text":'.'exito' .'}}';
