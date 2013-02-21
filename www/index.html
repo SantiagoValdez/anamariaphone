@@ -41,7 +41,7 @@
 	    	console.log("ajaxComplete");
 		}
 
-		comprobarPasswordVendedor(){
+		function comprobarPasswordVendedor(){
 			Vendedor = recuperarPorId( ListadoVendedores,  $("#select-vendedores").val());
 			var pass = $("#password").val();
 			if (Vendedor.password == pass ){
