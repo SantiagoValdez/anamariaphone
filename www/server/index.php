@@ -32,6 +32,7 @@ $app->get('/vendedores', 'getVendedores');
 $app->get('/clientes', 'getClientes');
 $app->get('/cliente/cobros/:id','getCobrosClientes');
 $app->post('/cliente/cobro', 'updateCobroCliente');
+$app->get('/vendedor', 'getVendedorPass');
 //$app->post('/cobro/:id','updateCobro');
 //$app->put('/oferta/:id','updateOferta');
 //$app->delete('/oferta/:id',   'deleteOferta');
@@ -42,6 +43,28 @@ $app->post('/cliente/cobro', 'updateCobroCliente');
 
  
 $app->run();
+
+/**
+* Funcion para Loguear en un archivo las acciones del Programa
+*
+*  Sirve para loguear de manera sencilla lo que va sucendiendo
+*  durante la ejecucuin del programa.
+* @author SantiagoValdez
+* @author santiagovaldez@groupweird.com
+* 
+*/
+function log($msg){
+    $filename = "log.log";
+    // abrimos el archivo
+    $fd = fopen($filename, "a");
+    // agregamos date/time al mensaje
+    $str = "[" . date("Y/m/d h:i:s", mktime()) . "] " . $msg; 
+    // escribismo
+    fwrite($fd, $str . "\n");
+    // cerramos and... PROFIT!
+    fclose($fd);
+
+}
  
 /**
 * Obtiene un puntero a una conexion a BD
@@ -82,8 +105,10 @@ function getVendedores() {
         $vendedores = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
         echo '{"Vendedores": ' . json_encode($vendedores) . '}';
+        log("Se envia vendedores : [" . json_encode($vendedores) . "]" );
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
+        log ("ERROR : [". $e->getMessage() "]");
     }
 }
 
@@ -103,9 +128,12 @@ function getClientes() {
         $clientes = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
         echo '{"Clientes": ' . json_encode($clientes) . '}';
+        log("Se envia clientes : [" . json_encode($clientes) . "]" );
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
+        log ("ERROR : [". $e->getMessage() "]");
     }
+
 }
 
 /**
@@ -126,9 +154,11 @@ function getCobrosClientes($id){
         $stmt->execute();
         $cobros = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
-        echo '{"Cobros": ' . json_encode($cobros) . '}';
+        echo '{"Cobros": ' . json_encode($cobros) . '}';}
+        log("Se envia cobros : [" . json_encode($cobros) . "]" );
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
+        log ("ERROR : [". $e->getMessage() "]");
     }
 }
 
@@ -143,11 +173,15 @@ function getCobrosClientes($id){
  
 function updateCobroCliente(){
     $request = \Slim\Slim::getInstance()->request();
-    $Oferta = json_decode($request->getBody());
-    echo $Oferta->idCliente;
+    $cobros = json_decode($request->getBody());
+    echo $cobros->idCliente;
 } 
 
 
+/*************************************************************************
+**************************************************************************
+**************************************************************************
+**************************************************************************/
 function addOferta() {
     $request = \Slim\Slim::getInstance()->request();
     $Oferta = json_decode($request->getBody());
