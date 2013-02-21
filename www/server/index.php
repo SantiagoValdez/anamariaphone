@@ -183,7 +183,18 @@ function updateCobroCliente(){
         $sql = $sql . "UPDATE cobro SET cobro.pendite = 0 WHERE cobro.id = ".$cobros->listaCobros[$i]." ;";
     }
 
-    echo $sql;
+    //echo $sql;
+    try {
+        $db = getConnection();
+        $stmt = $db->query($sql);
+        $respuesta = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        echo '{"status":{"text":'.'exito' .'}}';
+        loguear("Se ha realizado : [". $sql . "] - Con exito"  );
+    } catch(PDOException $e) {
+        echo '{"status":{"text":'. $e->getMessage() .'}}';
+        loguear("ERROR : [". $e->getMessage(). "]");
+    }
 
 
 } 
