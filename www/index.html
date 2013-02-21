@@ -257,7 +257,7 @@
 			$.ajax({
 				  type: "POST",
 				  url: url,
-				  data: datos,
+				  data: JSON.stringify( datos ),
 				  async : false
 				}).done(function( msg ) {
 				  alert( "Data Saved: " + msg );
