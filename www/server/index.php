@@ -154,7 +154,7 @@ function getCobrosClientes($id){
         $stmt->execute();
         $cobros = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
-        echo '{"Cobros": ' . json_encode($cobros) . '}';}
+        echo '{"Cobros": ' . json_encode($cobros) . '}';
         loguear("Se envia cobros : [" . json_encode($cobros) . "]" );
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
