@@ -16,6 +16,7 @@
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?&sensor=true"></script>
 
 	<script type="text/javascript"> 
+		var urlBase = "http://groupweird.com/anamaria/www/";
 		var Cliente;
 		var ListadoClientes;
 		
@@ -46,7 +47,7 @@
 		function cargarListaVendedores(){
 
 		  //Hacemos una peticion get al servidor, a la direccion que establecimos
-		  $.get('./server/vendedores', function(data) {
+		  $.get(urlBase + './server/vendedores', function(data) {
 		    console.log(data);
 		    //Tenemos la lista pero esta mas adentro
 		    var lista = jQuery.parseJSON( data );
@@ -73,7 +74,7 @@
 		function cargarListaClientes(){
 
 		  //Hacemos una peticion get al servidor, a la direccion que establecimos
-		  $.get('./server/clientes', function(data) {
+		  $.get(urlBase + './server/clientes', function(data) {
 		    console.log(data);
 		    //Tenemos la lista pero esta mas adentro
 		    var lista = jQuery.parseJSON( data );
@@ -107,7 +108,7 @@
 											  " " + Cliente.apellido + "</b>" + 
 											  " Saldo: " + Cliente.saldo );
 
-					var url = "./server/cliente/cobros/" + Cliente.id;
+					var url = urlBase + "./server/cliente/cobros/" + Cliente.id;
 
 					$.get(url, function(data) {
 					    console.log(data);
@@ -196,7 +197,7 @@
 
 			console.log(datos);
 
-		  	var url = "./server/cliente/cobro";
+		  	var url = urlBase + "./server/cliente/cobro";
 		  	console.log(datos);
  
 		  	var posting = $.post( url , JSON.stringify(datos) );
