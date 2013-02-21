@@ -175,7 +175,7 @@ function getCobrosClientes($id){
 function updateCobroCliente(){
     $request = \Slim\Slim::getInstance()->request();
     $cobros = json_decode($request->getBody());
-    loguear("Se reciben por post : " . $require->getBody() );
+    loguear("Se reciben por post : " . $request->getBody() );
     echo "{'hola' : 'que tul'}";
 } 
 
