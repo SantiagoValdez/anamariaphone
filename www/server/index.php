@@ -79,8 +79,8 @@ function getConnection() {
     $dbuser="groupwe"; 
     //$dbpass="pepe";
     $dbpass="kaiser09";
-    $dbname="anamaria";
-    //$dbname="groupwe_anamaria";
+    //$dbname="anamaria";
+    $dbname="groupwe_anamaria";
     $dbh = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
     $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     return $dbh;
@@ -98,7 +98,7 @@ function getConnection() {
 */
 
 function getVendedores() {
-    $sql = "select id,nombre,apellido FROM vendedor ORDER BY apellido";
+    $sql = "select id,nombre,apellido,password FROM vendedor ORDER BY apellido";
     try {
         $db = getConnection();
         $stmt = $db->query($sql);

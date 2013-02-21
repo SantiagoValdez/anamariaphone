@@ -40,6 +40,17 @@
 		    $("#loading").hide();
 	    	console.log("ajaxComplete");
 		}
+
+		comprobarPasswordVendedor(){
+			Vendedor = recuperarPorId( ListadoVendedores,  $("#select-vendedores").val());
+			var pass = $("#password").val();
+			if (Vendedor.password == pass ){
+				console.log("OK");
+			}
+			else{
+				console.log("NOOOO");
+			}
+		}
 		/*
 			Dada una lista, retorna el objeto que posea ese id
 		*/
@@ -90,6 +101,7 @@
 
 		function cargarListaClientes(){
 
+		  comprobarPasswordVendedor();
 		  //Hacemos una peticion get al servidor, a la direccion que establecimos
 		  comenzarTransaccion();
 		  var url = urlBase + 'clientes';
@@ -290,6 +302,7 @@
 			<select name="select-vendedores" id="select-vendedores">
 			   <!-- Aca deberia ir la lista de vendedores -->
 			</select>
+			<input type="text" placeholder="password" name="password" id="password">
 			<br>
 		<p><a href="#seleccionar-cliente" data-role="button" data-transition="slideup" data-icon="check" onClick="cargarListaClientes()"> OK </a></p> 
 		<p><a href="#inicio" data-role="button" data-transition="slideup" data-icon="arrow-l" > atras </a></p>			
