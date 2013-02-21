@@ -2,6 +2,7 @@
 
 <?php
 
+header('Access-Control-Allow-Origin: *');
 /**
 * Servidor Ana Maria Phone
 *
@@ -182,6 +183,11 @@ function updateCobroCliente(){
 **************************************************************************
 **************************************************************************
 **************************************************************************/
+
+/*
+*   Grupo de funciones para el manejo
+*   de :        EJEMPLO
+*/
 function addOferta() {
     $request = \Slim\Slim::getInstance()->request();
     $Oferta = json_decode($request->getBody());

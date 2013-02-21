@@ -45,10 +45,14 @@
 			Vendedor = recuperarPorId( ListadoVendedores,  $("#select-vendedores").val());
 			var pass = $("#password").val();
 			if (Vendedor.password == pass ){
-				console.log("OK");
+				console.log("OK Password Coincide");
+				$.mobile.changePage( $("#seleccionar-cliente") );
+				cargarListaClientes();
 			}
 			else{
-				console.log("NOOOO");
+				console.log("NOOOO!!");
+				alert("Password Incorrecto!");
+				$("#password").val('');
 			}
 		}
 		/*
@@ -101,7 +105,6 @@
 
 		function cargarListaClientes(){
 
-		  comprobarPasswordVendedor();
 		  //Hacemos una peticion get al servidor, a la direccion que establecimos
 		  comenzarTransaccion();
 		  var url = urlBase + 'clientes';
@@ -186,7 +189,6 @@
 
 		function prepararCobro(){
 			var listaCobrosId = [];
-
 			Monto = $("#monto-cobro").val();
 			$('#lista-cobros input[type=checkbox]').each(function() {
 			    if ($(this).attr('checked')){
@@ -201,18 +203,26 @@
 			//Si ya tengo la lista de cobros.
 			if ( listaCobrosId.length > 0 && Monto > 0 && Monto <= Cliente.saldo ){
 				console.log("Tengo cobros seleccionados");
-				
-				var cadena = "Confirma que realizara un cobro a <b>" + Cliente.nombre + " " + Cliente.apellido + 
-							 "</b> por la suma de : " + Monto + " por las cuotas de fecha : <ul>";
-				for (x in listaCobrosId){
-					var cobro = recuperarPorId(ListaCobros, listaCobrosId[x]);
-					cadena = cadena + "<li>" + cobro.fecha + "</li>";
-				}
-				cadena = cadena + "</ul>"
+				// Se comprueba el caso en que selecciona todo y el monto tiene que ser igual al saldo
+				if (ListaCobros.length == listaCobrosId.length && !(Monto == Cliente.saldo) ){
+					console.log("Deberian ser iguales el monto y el cobro");
+					alert("Si selecciona todos los cobros el saldo debe ser igual al monto")
+					$.mobile.changePage( $("#cobro") );
+				}else{
 
-				CobrosRealizados = listaCobrosId;
-				$("#confirmacion-cobro-placeholder").empty().append(cadena);
-				$.mobile.changePage( $("#confirmar-cobro") );
+					var cadena = "Confirma que realizara un cobro a <b>" + Cliente.nombre + " " + Cliente.apellido + 
+								 "</b> por la suma de - <b>" + Monto + "</b> por las cuotas de fecha : <ul>";
+					for (x in listaCobrosId){
+						var cobro = recuperarPorId(ListaCobros, listaCobrosId[x]);
+						cadena = cadena + "<li>" + cobro.fecha + "</li>";
+					}
+					cadena = cadena + "</ul>"
+					cadena = cadena + "<i>El saldo del cliente quedara en Gs.</i>" + (Cliente.saldo - Monto);
+
+					CobrosRealizados = listaCobrosId;
+					$("#confirmacion-cobro-placeholder").empty().append(cadena);
+					$.mobile.changePage( $("#confirmar-cobro") );
+				}
 			}else{
 				alert ("Seleccione alguna cuota. Verifique que el monto a cobrar es mayor a cero y menor o igual al saldo del cliente");
 				$.mobile.changePage( $("#cobro") );
@@ -234,14 +244,25 @@
 
 		  	var url = "http://groupweird.com/anamaria/www/server/cliente/cobro";
 		  	console.log(datos);
- 
-		  	var posting = $.post( url , JSON.stringify(datos) );
+		  	
+		  	//var posting = $.post( url , JSON.stringify(datos) );
 			 
 			  /* Put the results in a div */
+			  /*
 			  posting.done(function( data ) {
 			    //ya esta tarde asi que no comprobamos errores :O
 			    alert("Se agrego " + data);
-			  });
+			  }); */
+
+			$.ajax({
+				  type: "POST",
+				  url: url,
+				  data: datos,
+				  async : false
+				}).done(function( msg ) {
+				  alert( "Data Saved: " + msg );
+				});
+
 		}
     </script>
 
@@ -304,7 +325,7 @@
 			</select>
 			<input type="text" placeholder="password" name="password" id="password">
 			<br>
-		<p><a href="#seleccionar-cliente" data-role="button" data-transition="slideup" data-icon="check" onClick="cargarListaClientes()"> OK </a></p> 
+		<p><a href="" data-role="button" data-transition="slideup" data-icon="check" onClick="comprobarPasswordVendedor()"> OK </a></p> 
 		<p><a href="#inicio" data-role="button" data-transition="slideup" data-icon="arrow-l" > atras </a></p>			
 		</center>
 	</div><!-- /content -->
@@ -384,7 +405,7 @@
 	<div data-role="content">
 		<center>	
 		<h2>Cobro</h2>	
-		Confirme el siguiente cobro :
+		<b>Confirme el siguiente cobro :</b>
 		<div id="confirmacion-cobro-placeholder">
 		</div>	
 		<p><a href="" data-role="button" data-transition="slideup" data-icon="check" onClick="confirmarCobro()"> Confimar </a></p> 
