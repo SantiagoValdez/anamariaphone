@@ -75,10 +75,10 @@ function loguear($msg){
 
 function getConnection() {
     $dbhost="127.0.0.1";
-    $dbuser="root"; 
-    //$dbuser="groupwe"; 
-    $dbpass="pepe";
-    //$dbpass="kaiser09";
+    //$dbuser="root"; 
+    $dbuser="groupwe"; 
+    //$dbpass="pepe";
+    $dbpass="kaiser09";
     $dbname="anamaria";
     //$dbname="groupwe_anamaria";
     $dbh = new PDO("mysql:host=$dbhost;dbname=$dbname", $dbuser, $dbpass);
