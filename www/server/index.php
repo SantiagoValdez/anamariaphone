@@ -53,7 +53,7 @@ $app->run();
 * @author santiagovaldez@groupweird.com
 * 
 */
-function log($msg){
+function loguear($msg){
     $filename = "log.log";
     // abrimos el archivo
     $fd = fopen($filename, "a");
@@ -105,10 +105,10 @@ function getVendedores() {
         $vendedores = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
         echo '{"Vendedores": ' . json_encode($vendedores) . '}';
-        log("Se envia vendedores : [" . json_encode($vendedores) . "]" );
+        loguear("Se envia vendedores : [" . json_encode($vendedores) . "]" );
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
-        log ("ERROR : [". $e->getMessage() "]");
+        loguear("ERROR : [". $e->getMessage(). "]");
     }
 }
 
@@ -128,10 +128,10 @@ function getClientes() {
         $clientes = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
         echo '{"Clientes": ' . json_encode($clientes) . '}';
-        log("Se envia clientes : [" . json_encode($clientes) . "]" );
+        loguear("Se envia clientes : [" . json_encode($clientes) . "]" );
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
-        log ("ERROR : [". $e->getMessage() "]");
+        loguear("ERROR : [". $e->getMessage(). "]");
     }
 
 }
@@ -155,10 +155,10 @@ function getCobrosClientes($id){
         $cobros = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
         echo '{"Cobros": ' . json_encode($cobros) . '}';}
-        log("Se envia cobros : [" . json_encode($cobros) . "]" );
+        loguear("Se envia cobros : [" . json_encode($cobros) . "]" );
     } catch(PDOException $e) {
         echo '{"error":{"text":'. $e->getMessage() .'}}';
-        log ("ERROR : [". $e->getMessage() "]");
+        loguear("ERROR : [". $e->getMessage(). "]");
     }
 }
 
