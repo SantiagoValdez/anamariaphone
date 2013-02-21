@@ -237,7 +237,8 @@
 			var datos = {
 					"idCliente" : Cliente.id,
 					"listaCobros" : CobrosRealizados,
-					"monto" : Monto
+					"monto" : Monto,
+					"idVendedor" : Vendedor.id
 					};
 
 			console.log(datos);
@@ -260,9 +261,9 @@
 				  data: JSON.stringify( datos ),
 				  async : false
 				}).done(function( msg ) {
-				  alert( "Data Saved: " + msg );
-				});
-
+				  alert(  msg );
+				}).fail(function() { alert("Ocurrio un error en el servidor"); });
+				
 		}
     </script>
 
