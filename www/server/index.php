@@ -186,11 +186,12 @@ function updateCobroCliente(){
     //echo $sql;
     try {
         $db = getConnection();
+        loguear("Se intenta ejecutar : [". $sql . "] - Inicio Transaccion"  );
         $stmt = $db->query($sql);
         $respuesta = $stmt->fetchAll(PDO::FETCH_OBJ);
         $db = null;
         echo '{"status":{"text":'.'exito' .'}}';
-        loguear("Se ha realizado : [". $sql . "] - Con exito"  );
+        loguear("Se ha realizado : [". $sql . "] - Fin Transaccion"  );
     } catch(PDOException $e) {
         echo '{"status":{"text":'. $e->getMessage() .'}}';
         loguear("ERROR : [". $e->getMessage(). "]");
