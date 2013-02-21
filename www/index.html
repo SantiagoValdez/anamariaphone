@@ -16,7 +16,7 @@
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?&sensor=true"></script>
 
 	<script type="text/javascript"> 
-		var urlBase = "http://groupweird.com/anamaria/www/";
+		var urlBase = "http://groupweird.com/anamaria/www/server/";
 		var Cliente;
 		var ListadoClientes;
 		
@@ -47,10 +47,12 @@
 		function cargarListaVendedores(){
 
 		  //Hacemos una peticion get al servidor, a la direccion que establecimos
-		  $.get(urlBase + './server/vendedores', function(data) {
+		  var url = urlBase + 'vendedores';
+		  console.log(url);
+		  $.getJSON('http://whateverorigin.org/get?url=' + encodeURIComponent(url) + '&callback=?', function(data){
 		    console.log(data);
 		    //Tenemos la lista pero esta mas adentro
-		    var lista = jQuery.parseJSON( data );
+		    var lista = jQuery.parseJSON( data.contents );
 		    console.log (lista);
 		    //Sacamos un poco mas afuera
 		    var vendedores = lista.Vendedores;
@@ -69,15 +71,18 @@
 
 		/*
 			Carga la lista de clientes en el select
+
 		*/
 
 		function cargarListaClientes(){
 
 		  //Hacemos una peticion get al servidor, a la direccion que establecimos
-		  $.get(urlBase + './server/clientes', function(data) {
+		  var url = urlBase + 'clientes';
+		  console.log(url);
+		  $.getJSON('http://whateverorigin.org/get?url=' + encodeURIComponent(url) + '&callback=?', function(data) {
 		    console.log(data);
 		    //Tenemos la lista pero esta mas adentro
-		    var lista = jQuery.parseJSON( data );
+		    var lista = jQuery.parseJSON( data.contents );
 		    console.log (lista);
 		    //Sacamos un poco mas afuera
 		    var clientes = lista.Clientes;
@@ -108,12 +113,12 @@
 											  " " + Cliente.apellido + "</b>" + 
 											  " Saldo: " + Cliente.saldo );
 
-					var url = urlBase + "./server/cliente/cobros/" + Cliente.id;
-
-					$.get(url, function(data) {
+					var url = urlBase + "cliente/cobros/" + Cliente.id;
+					console.log(url);
+					$.getJSON('http://whateverorigin.org/get?url=' + encodeURIComponent(url) + '&callback=?', function(data) {
 					    console.log(data);
 					    //Tenemos la lista pero esta mas adentro
-					    var lista = jQuery.parseJSON( data );
+					    var lista = jQuery.parseJSON( data.contents );
 					    console.log (lista);
 					    //Sacamos un poco mas afuera
 					    var cobros = lista.Cobros;
@@ -197,7 +202,7 @@
 
 			console.log(datos);
 
-		  	var url = urlBase + "./server/cliente/cobro";
+		  	var url = "http://groupweird.com/anamaria/www/server/cliente/cobro";
 		  	console.log(datos);
  
 		  	var posting = $.post( url , JSON.stringify(datos) );
