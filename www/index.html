@@ -15,6 +15,8 @@
 	<script src="rsc/jquery.mobile-1.2.0-alpha.1.min.js"></script>
 	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?&sensor=true"></script>
 
+
+
 	<script type="text/javascript"> 
 		var urlBase = "http://groupweird.com/anamaria/www/server/";
 		var Cliente;
@@ -28,6 +30,16 @@
 
 		var Monto = 0;		
 
+
+		function comenzarTransaccion(){
+		    	$("#loading").show();
+    			console.log("ajaxStart");
+		}
+
+		function finalizarTransaccion(){
+		    $("#loading").hide();
+	    	console.log("ajaxComplete");
+		}
 		/*
 			Dada una lista, retorna el objeto que posea ese id
 		*/
@@ -41,11 +53,13 @@
 		}
 
 
+
 		/*
 			Carga la lista de Vendedores en el Select
 		*/
 		function cargarListaVendedores(){
 
+		  comenzarTransaccion();
 		  //Hacemos una peticion get al servidor, a la direccion que establecimos
 		  var url = urlBase + 'vendedores';
 		  console.log(url);
@@ -65,7 +79,7 @@
 		    $("#select-vendedores").selectmenu('refresh', true);
 		    ListadoVendedores = vendedores;
 		    console.log("prueba refresh 2");
-		    
+		    finalizarTransaccion();
 		  });
 		}
 
@@ -77,6 +91,7 @@
 		function cargarListaClientes(){
 
 		  //Hacemos una peticion get al servidor, a la direccion que establecimos
+		  comenzarTransaccion();
 		  var url = urlBase + 'clientes';
 		  console.log(url);
 		  $.getJSON('http://whateverorigin.org/get?url=' + encodeURIComponent(url) + '&callback=?', function(data) {
@@ -96,6 +111,7 @@
 		    ListadoClientes = clientes;
 		    console.log("prueba cliente");
 		    
+		    finalizarTransaccion();
 		  });
 		
 		}
@@ -104,6 +120,7 @@
 			Recupera los cobros del cliente seleccionado y los carga en el formulario
 		*/
 		function cargarListaCobrosCliente(){
+			comenzarTransaccion();
 			Cliente = recuperarPorId( ListadoClientes , $("#select-clientes").val() );
 			Vendedor = recuperarPorId( ListadoVendedores,  $("#select-vendedores").val())
 			if ( Cliente != null && Vendedor != null){
@@ -139,6 +156,7 @@
 
 					    console.log("prueba cobros");
 					    $.mobile.changePage( $("#cobro") );
+					    finalizarTransaccion();
 				    
 				  	});
 			  	}else{
@@ -215,9 +233,25 @@
 		}
     </script>
 
-
+  <style type="text/css">
+      #loading {
+      	position:fixed; 
+	   _position:absolute;
+	   top: 0;
+	   left:47%; 
+	   padding:20px 50px;
+	   z-index: 5000;
+	   background-color:#CF4342;
+	   color:#fff;
+      }
+  </style>
 </head> 
 <body> 
+
+<div id="loading" style="display:none">
+    <img src="img/ajax-loader.gif" alt="Loader" />&nbsp;Cargando...
+</div>
+
 
 <div data-role="page" id="inicio" data-theme="a">
 
