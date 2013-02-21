@@ -32,7 +32,7 @@ $app->get('/vendedores', 'getVendedores');
 $app->get('/clientes', 'getClientes');
 $app->get('/cliente/cobros/:id','getCobrosClientes');
 $app->post('/cliente/cobro', 'updateCobroCliente');
-$app->get('/vendedor', 'getVendedorPass');
+//$app->get('/vendedor', 'getVendedorPass');
 //$app->post('/cobro/:id','updateCobro');
 //$app->put('/oferta/:id','updateOferta');
 //$app->delete('/oferta/:id',   'deleteOferta');
