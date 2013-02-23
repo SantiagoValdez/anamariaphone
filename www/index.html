@@ -262,6 +262,9 @@
 				  async : false
 				}).done(function( msg ) {
 				  alert(  msg );
+				  var respuesta = JSON.parse(msg);
+				  console.log(respuesta);
+				  
 				}).fail(function() { alert("Ocurrio un error en el servidor"); });
 				
 		}
@@ -299,6 +302,7 @@
 		<p> <img src="img/logo.png"> </p>	
 		<h1>Ana Maria Comercial</h1>
 		<p>Sistema de control de Cobros</p>
+		<p><small>Seleccione su nombre e introduzca su contraseña, seleccione el cliente, los cobros que desea dar de alta, el monto que recibe del cliente, relea con atencion que los datos son correctos y confirme el cobro.</small></p>
 		<p><br/></p>	
 		<p><a href="#ingresar" data-role="button" data-transition="slide" id="test" onClick="cargarListaVendedores()"> Ingresar </a></p>		
 		</center>
