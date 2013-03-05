@@ -1,12 +1,9 @@
 anamariaphone
 =============
 
-Aplicacion mobile para Ana Maria
+Aplicacion mobile para Diario 5 dias
 
-- Realizar cobros mediante telefono
+- Levantar pedidos mediante telefono movil
 
 TODO
 =====
-
-- IComunicacion con BD.
-- Lado Servidor.
